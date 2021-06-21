@@ -1,0 +1,55 @@
+HDFS常用操作
+
+# cd
+# hadoop fs -ls /
+# hadoop fs -put a.txt /
+# hadoop fs -get /a.txt a2.txt
+# hadoop fs -cp /a.txt /b.txt
+# hadoop fs -mkdir /txt
+# hadoop fs -mv /b.txt /txt
+# hadoop fs -lsr /			//递归查看目录中所有内容
+# hadoop fs -mv /txt/b.txt /txt/c.txt		//修改名称
+# hadoop fs -rm /VERSION
+# hadoop fs -rmdir /txt		//只能删除空文件夹
+# hadoop fs -rmr /txt			//递归删除所有内容
+# hadoop fs -chmod 777 /a.txt	//修改文件权限
+# hadoop fs -cat /a.txt
+# hadoop fs -tail /a.txt		//查看文件最后1000字节
+# hadoop fs -touchz /c.txt		//创建一个空文件
+
+# mkdir temp
+# mv a.txt temp
+# hadoop fs -put temp /	//put命令是可以直接上传文件夹及其中内容
+# hadoop fs -lsr /
+
+# hadoop fs -copyFromLocal temp /temp2	//等同于-put
+# hadoop fs -copyToLocal /temp2			//等同于-get
+
+
+
+::CLASS 2
+回收站机制
+1. 默认是不开启的
+2. 将Hadoop停止，修改配置文件
+# stop-all.sh
+# vim /opt/hadoop-2.8.5/etc/hadoop/core-site.xml
+	<!-- 开启回收站机制，指定时间间隔，单位是分钟 1440分钟即一天 -->
+	<property>
+		<name>fs.trash.interval</name>
+		<value>1440</value>
+	</property>
+
+3. 启动Hadoop，等待一分钟安全模式后，再进行删除文件测试
+# start-all.sh
+//等待一分钟
+
+# hadoop fs -rm /a.txt
+21/06/03 16:09:33 INFO fs.TrashPolicyDefault: Moved: 'hdfs://hadoop:9000/a.txt' to trash at: hdfs://hadoop:9000/user/root/.Trash/Current/a.txt
+
+# hadoop fs -lsr /
+# hadoop fs -mv /user/root/.Trash/Current/a.txt /a.txt
+
+
+
+5.pdf 
+HDFS概述，相关概念
